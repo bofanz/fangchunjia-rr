@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+.media-grid {
+  @apply grid grid-flow-row gap-y-8;
+
+  @apply grid-cols-subgrid;
+
+  .media-wrapper {
+    @apply col-span-4;
+
+    &.s {
+      @apply col-span-4;
+    }
+    &.m {
+      @apply col-span-5;
+    }
+    &.l {
+      @apply col-span-6;
+    }
+
+    .media {
+      @apply relative block;
+    }
+  }
+}

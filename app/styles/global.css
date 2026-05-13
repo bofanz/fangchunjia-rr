@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@source "../../src/**/*.{ts,tsx,astro}";
 
 @font-face {
   font-family: "ABC Otto";
@@ -52,8 +53,6 @@
   --media-l-h-max: 160px;
   --media-spacing: 40px;
   --section-top-spacing: 112px;
-  --cursor-default: url("/cursors/cursor-02.png"), default;
-  --cursor-pointer: url("/cursors/cursor-01.png"), pointer;
 }
 
 @layer base {
@@ -69,76 +68,8 @@
   * {
     scrollbar-width: none;
     -ms-overflow-style: none;
-    /* cursor: default; */
   }
   *::-webkit-scrollbar {
     display: none;
-  }
-}
-
-html,
-body {
-  @apply w-full h-dvh;
-  /* @apply bg-white; */
-  cursor: var(--cursor-default);
-}
-
-a,
-button,
-[role="button"],
-label,
-select {
-  cursor: var(--cursor-pointer);
-}
-
-h1 {
-  @apply leading-[22px];
-}
-
-h2 {
-  @apply font-semibold leading-[20px];
-}
-
-/* ViewTransition */
-/* .project-image {
-  view-transition-name: project-image;
-} */
-
-.project-list {
-  view-transition-name: project-list;
-}
-
-::view-transition-old(project-list) {
-  animation: fade-out 0.5s ease forwards;
-}
-
-::view-transition-old(project-title) {
-  animation: none;
-}
-
-::view-transition-old(project-image) {
-  animation: fade-out 1s ease forwards;
-}
-
-::view-transition-new(project-list),
-::view-transition-new(project-image) {
-  animation: none;
-}
-
-/* suppress new page until exit finishes */
-::view-transition-new(page-content) {
-  animation: none;
-  opacity: 0;
-}
-
-@keyframes fade-out {
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes to-white {
-  to {
-    filter: brightness(10);
   }
 }

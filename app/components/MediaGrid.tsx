@@ -1,0 +1,32 @@
+import type { Media, MediaLayoutItem } from "../types";
+// import { combineMedia } from "../utils/combineMedia";
+import MediaRenderer from "./MediaRenderer";
+import "../styles/media-grid.css";
+import { useEffect } from "react";
+import { urlFor } from "~/lib/sanity";
+
+function MediaWrapper({ media }: { media: any }) {
+  return (
+    <div
+      style={{
+        gridColumn:
+          "span " + media.colSpanDesktop + " / span " + media.colSpanDesktop,
+      }}
+    >
+      {/* <MediaRenderer media={media} /> */}
+      <img src={urlFor(media.image.asset._ref).url()} />
+    </div>
+  );
+}
+
+export default function MediaGrid({ grid }: { grid: any[] }) {
+  return (
+    <div className="media-grid col-span-6">
+      {grid &&
+        grid.map((m) => <MediaWrapper media={m} key={m.image.asset._ref} />)}
+      {/* {combineMedia(media, mediaLayout).map((m) => (
+        <MediaWrapper media={m} key={m.key} />
+      ))} */}
+    </div>
+  );
+}
