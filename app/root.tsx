@@ -5,10 +5,12 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { AnimatePresence } from "motion/react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,6 +44,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const location = useLocation();
+  // return (
+  //   <AnimatePresence mode="wait">
+  //     <Outlet key={location.pathname} />
+  //   </AnimatePresence>
+  // );
   return <Outlet />;
 }
 

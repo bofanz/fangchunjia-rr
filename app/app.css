@@ -99,46 +99,33 @@ h2 {
   @apply font-semibold leading-[20px];
 }
 
-/* ViewTransition */
-/* .project-image {
-  view-transition-name: project-image;
-} */
-
-.project-list {
-  view-transition-name: project-list;
+@keyframes fade-out {
+  to { opacity: 0; }
 }
 
-::view-transition-old(project-list) {
-  animation: fade-out 0.5s ease forwards;
+/* Extract <main> into its own layer so header/ProjectTitle (outside main) are unaffected */
+main {
+  view-transition-name: page-content;
 }
 
-::view-transition-old(project-title) {
-  animation: none;
+/* page content (the route area) fades out */
+::view-transition-old(page-content) {
+  animation: fade-out 0.3s ease-out both;
 }
 
-::view-transition-old(project-image) {
-  animation: fade-out 1s ease forwards;
-}
-
-::view-transition-new(project-list),
-::view-transition-new(project-image) {
-  animation: none;
-}
-
-/* suppress new page until exit finishes */
+/* new page content hidden — Framer Motion handles the entry */
 ::view-transition-new(page-content) {
   animation: none;
   opacity: 0;
 }
 
-@keyframes fade-out {
-  to {
-    opacity: 0;
-  }
+/* Root layer (header, ProjectTitle, etc.): hide old snapshot so new shows through immediately
+   — no cross-fade, persistent elements appear stable throughout the transition */
+::view-transition-old(root) {
+  animation: none;
+  opacity: 0;
 }
 
-@keyframes to-white {
-  to {
-    filter: brightness(10);
-  }
+::view-transition-new(root) {
+  animation: none;
 }
