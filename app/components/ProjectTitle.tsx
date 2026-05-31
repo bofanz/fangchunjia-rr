@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/react";
 import { motion } from "motion/react";
-import { useLocation, useRouteLoaderData } from "react-router";
+import { useLocation, useMatches, useRouteLoaderData } from "react-router";
 import { $activePos, $activeProject } from "~/stores/ui";
 import type { loader as slugLoader } from "~/routes/_layout.projects.$slug";
 import type { ProjectInfo } from "~/routes/_layout.projects._index";
@@ -8,16 +8,12 @@ import type { ProjectInfo } from "~/routes/_layout.projects._index";
 const DETAIL_LANDING = { top: 112, left: 32 };
 
 export default function ProjectTitle({ project }: { project: ProjectInfo }) {
-  const location = useLocation();
   const activePos = useStore($activePos);
-  const activeProject = useStore($activeProject);
-  // const slugData = useRouteLoaderData<typeof slugLoader>(
-  //   "routes/_layout.projects.$slug",
-  // );
 
-  const isDetailPage =
-    location.pathname.startsWith("/projects/") &&
-    location.pathname !== "/projects";
+  const matches = useMatches();
+  const isDetailPage = matches.some(
+    (match) => match.id === "routes/_layout.projects.$slug",
+  );
 
   // const title = activeProject?.title ?? slugData?.project?.title;
 
@@ -56,11 +52,12 @@ export default function ProjectTitle({ project }: { project: ProjectInfo }) {
       }}
       style={{
         position: "fixed",
-        zIndex: 50,
+        zIndex: 5000,
         pointerEvents: "none",
         viewTransitionName: "project-title",
+        color: project.accentColor.hex,
       }}
-      className="[text-shadow:0_0_2px_#DABBFF80] text-[#DABBFF] font-medium text-2xl mb-0 py-0 blur-[2px]"
+      className="font-medium text-2xl mb-0 py-0 blur-[2px]"
     >
       <h1>{project.title}</h1>
     </motion.div>

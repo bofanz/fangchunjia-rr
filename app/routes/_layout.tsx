@@ -6,40 +6,21 @@ import {
   useRouteLoaderData,
 } from "react-router";
 import { useStore } from "@nanostores/react";
-import { motion } from "motion/react";
+import { motion, useMotionValue } from "motion/react";
 import Gallery from "~/components/Gallery";
 import { urlFor } from "~/lib/sanity";
 import Header from "~/components/Header";
 import ProjectTitle from "~/components/ProjectTitle";
 import Purikura from "~/components/Purikura";
 import Quote from "~/components/Quote";
-import {
-  $activePos,
-  $activeProject,
-  $hoveredProject,
-  $scrollY,
-} from "~/stores/ui";
-import type {
-  ProjectInfo,
-  loader as projectsLoader,
-} from "~/routes/_layout.projects._index";
-import type { loader as projectLoader } from "~/routes/_layout.projects.$slug";
+import { $activeProject, $hoveredProject, $scrollY } from "~/stores/ui";
 import Screen from "~/components/Screen";
 
 export function ProjectsLayout() {
   const matches = useMatches();
   const isDetailPage = matches.some(
-    (match) => match.id === "layout.projects.$slug",
+    (match) => match.id === "routes/_layout.projects.$slug",
   );
-  // console.log(isDetailPage);
-  // const projectsData = useRouteLoaderData<typeof projectsLoader>(
-  //   "routes/_layout.projects._index",
-  // );
-  // const projects = projectsData?.projects;
-  // const projectData = useRouteLoaderData<typeof projectLoader>(
-  //   "routes/_layout.projects.$slug",
-  // );
-  // const project = projectData?.project;
   const galleryWrapperRef = useRef<HTMLDivElement>(null);
   const hoveredProject = useStore($hoveredProject);
   const activeProject = useStore($activeProject);
@@ -58,6 +39,24 @@ export function ProjectsLayout() {
       galleryWrapperRef.current.style.transform = `translateY(-${Math.min(y, maxTranslate)}px)`;
     });
   }, [isDetailPage]);
+
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+  const isFollowingRef = useRef(true);
+
+  useEffect(() => {
+    isFollowingRef.current = !isDetailPage;
+  }, [isDetailPage]);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (!isFollowingRef.current) return;
+      cursorX.set(e.clientX + 16);
+      cursorY.set(e.clientY + 16);
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
 
   const onScreenProject = activeProject || hoveredProject || null;
 
@@ -81,63 +80,37 @@ export function ProjectsLayout() {
       >
         <Screen item={displayItem} />
       </motion.div>
+      {/* {onScreenProject && (
+        <div className="">
+          <ProjectTitle project={onScreenProject} />
+        </div>
+      )} */}
+      {onScreenProject && (
+        <motion.div
+          initial={{ filter: "blur(2px)" }}
+          animate={{ filter: isDetailPage ? "blur(0px)" : "blur(2px)" }}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            x: cursorX,
+            y: cursorY,
+            zIndex: 5000,
+            pointerEvents: "none",
+            viewTransitionName: "project-title",
+            color: onScreenProject.accentColor.hex,
+          }}
+          className="font-medium text-2xl mb-0 py-0"
+        >
+          <h1>{onScreenProject.title}</h1>
+        </motion.div>
+      )}
     </>
   );
 }
-// 2. At /projects.$slug from /projects
-// 3. At /projects.$slug directly
-// 4. At /projects from /projects.$slug
 
 export default function Layout({ pathname }: { pathname: string }) {
-  const location = useLocation();
-  // const isDetailPage = /^\/projects\/.+/.test(location.pathname);
-  const activeProject = useStore($activeProject);
-  const hoveredProject = useStore($hoveredProject);
-  const galleryWrapperRef = useRef<HTMLDivElement>(null);
   const [isPurikuraVisible, setIsPurikuraVisible] = useState<boolean>(false);
-  // const projectsData = useRouteLoaderData<typeof projectsLoader>(
-  //   "routes/_layout.projects._index",
-  // );
-  // const projectData = useRouteLoaderData<typeof projectLoader>(
-  //   "routes/_layout.projects.$slug",
-  // );
-  // const [cachedProjects, setCachedProjects] = useState(
-  //   projectsData?.projects ?? null,
-  // );
-
-  // useEffect(() => {
-  //   if (projectsData?.projects) {
-  //     setCachedProjects(projectsData.projects);
-  //   }
-  // }, [projectsData?.projects]);
-
-  // useEffect(() => {
-  //   if (location.pathname === "/projects") {
-  //     const timer = setTimeout(() => {
-  //       $activeProject.set(null);
-  //       $activePos.set(null);
-  //     }, 650);
-  //     return () => clearTimeout(timer);
-  //   }
-  //   if (!location.pathname.startsWith("/projects")) {
-  //     $activeProject.set(null);
-  //     $activePos.set(null);
-  //   }
-  // }, [location.pathname]);
-
-  // useEffect(() => {
-  //   if (!isDetailPage) {
-  //     if (galleryWrapperRef.current)
-  //       galleryWrapperRef.current.style.transform = "";
-  //     $scrollY.set(0);
-  //     return;
-  //   }
-  //   return $scrollY.listen((y) => {
-  //     if (!galleryWrapperRef.current) return;
-  //     const maxTranslate = window.innerHeight - 32;
-  //     galleryWrapperRef.current.style.transform = `translateY(-${Math.min(y, maxTranslate)}px)`;
-  //   });
-  // }, [isDetailPage]);
 
   const navItems = [
     { title: "Home", to: "/home", id: "home" },
@@ -147,79 +120,6 @@ export default function Layout({ pathname }: { pathname: string }) {
 
   return (
     <>
-      {/* {cachedProjects ? (
-        <>
-          <motion.div
-            ref={galleryWrapperRef}
-            className="fixed top-0 left-0 right-0 overflow-hidden project-image"
-            animate={{
-              height:
-                isDetailPage && activeProject
-                  ? "calc(100dvh - 32px)"
-                  : "100dvh",
-            }}
-            transition={
-              isDetailPage && activeProject
-                ? { duration: 1, delay: 0.5, ease: [0.76, 0, 0.24, 1] }
-                : { duration: 0 }
-            }
-          >
-            <Gallery
-              items={cachedProjects.map((p) => ({
-                id: p.slug.current,
-                mediaType: p.cover.mediaType,
-                ...(p.cover.mediaType === "image" && {
-                  sanityRef: p.cover.asset?._ref,
-                }),
-                ...(p.cover.mediaType === "video" && {
-                  vimeoId: p.cover.vimeoId,
-                }),
-              }))}
-              showItem={(item) => item.id === hoveredProject?.slug.current}
-            />
-          </motion.div>
-          <div className="">
-            <ProjectTitle project={cachedProjects} />
-          </div>
-        </>
-      ) : (
-        <>
-          <motion.div
-            ref={galleryWrapperRef}
-            className="fixed top-0 left-0 right-0 overflow-hidden project-image"
-            animate={{
-              height:
-                isDetailPage && activeProject
-                  ? "calc(100dvh - 32px)"
-                  : "100dvh",
-            }}
-            transition={
-              isDetailPage && activeProject
-                ? { duration: 1, delay: 0.5, ease: [0.76, 0, 0.24, 1] }
-                : { duration: 0 }
-            }
-          >
-            <Gallery
-              items={[
-                {
-                  id: projectData?.project.slug.current,
-                  mediaType: projectData?.project.cover.mediaType,
-                  ...(projectData?.project.cover.mediaType === "image" && {
-                    sanityRef: projectData?.project.cover.asset._ref,
-                  }),
-                  ...(projectData?.project.cover.mediaType === "video" && {
-                    vimeoId: projectData?.project.cover.vimeoId,
-                  }),
-                },
-              ]}
-              showItem={() => true}
-            />
-          </motion.div>
-          <div className="">
-            <ProjectTitle project={cachedProjects} />
-          </div>
-        </>
-      )} */}
       <ProjectsLayout />
       <Header
         navItems={navItems}
