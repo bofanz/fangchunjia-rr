@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { useLocation, useRouteLoaderData } from "react-router";
 import { $activePos, $activeProject } from "~/stores/ui";
 import type { loader as slugLoader } from "~/routes/_layout.projects.$slug";
-import type { ProjectInfo } from "~/types";
+import type { ProjectInfo } from "~/routes/_layout.projects._index";
 
 const DETAIL_LANDING = { top: 112, left: 32 };
 

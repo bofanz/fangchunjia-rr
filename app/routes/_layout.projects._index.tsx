@@ -5,10 +5,23 @@ import { client } from "~/lib/sanity";
 import groq from "groq";
 import ProjectList from "~/components/ProjectList";
 import { $hoveredProject } from "~/stores/ui";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import ReactLenis from "lenis/react";
-import type { ProjectInfo } from "~/types";
 import { motion } from "motion/react";
+import type { Project } from "~/types/sanity.types";
+
+export type ProjectInfo = Pick<
+  Project,
+  | "_id"
+  | "category"
+  | "title"
+  | "subtitle"
+  | "slug"
+  | "year"
+  | "cover"
+  | "accentColor"
+  | "lightDark"
+>;
 
 export async function loader({}: Route.LoaderArgs) {
   const raw = await client.fetch<any[]>(groq`
@@ -24,7 +37,18 @@ export async function loader({}: Route.LoaderArgs) {
       category-> { _id, title }
     }
   `);
-  const projects: ProjectInfo[] = raw.map((p) => ({
+  const projects: Pick<
+    Project,
+    | "_id"
+    | "category"
+    | "title"
+    | "subtitle"
+    | "slug"
+    | "year"
+    | "cover"
+    | "accentColor"
+    | "lightDark"
+  >[] = raw.map((p) => ({
     ...p,
     id: p._id,
     categoryId: p.category?._id ?? "",
@@ -54,7 +78,7 @@ export default function Projects() {
         <div className="p-4 pt-28">
           <section className="">
             <div className="">
-              <ProjectList projects={projects} categories={categories} />
+              <ProjectList projects={projects} />
             </div>
           </section>
         </div>

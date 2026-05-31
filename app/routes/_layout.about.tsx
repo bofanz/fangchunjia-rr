@@ -1,12 +1,12 @@
 import { PortableText } from "@portabletext/react";
 import { client } from "~/lib/sanity";
-import type { About } from "~/types";
 import groq from "groq";
 import { data, useLoaderData } from "react-router";
+import type { About } from "../types/sanity.types";
 
 export async function loader() {
   const about = await client.fetch<About>(
-    `
+    groq`
     *[_type == "about"][0] {
       _id,
       body,

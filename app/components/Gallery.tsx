@@ -8,7 +8,8 @@ export default function Gallery({ projects }: { projects: ProjectInfo[] }) {
   const hoveredProject = useStore($hoveredProject);
   const activeProject = useStore($activeProject);
   const project = hoveredProject || activeProject || null;
-  console.log(project);
+  // console.log(project);
+  console.log(activeProject);
   return (
     <div className="relative w-full h-full pointer-events-none">
       {projects.map((p) => {

@@ -1,4 +1,3 @@
-import type { Media, MediaLayoutItem } from "../types";
 // import { combineMedia } from "../utils/combineMedia";
 import MediaRenderer from "./MediaRenderer";
 import "../styles/media-grid.css";
@@ -6,7 +5,7 @@ import { useEffect } from "react";
 import { urlFor } from "~/lib/sanity";
 
 function MediaWrapper({ media }: { media: any }) {
-  console.log(media);
+  // console.log(media);
   return (
     <div
       style={{

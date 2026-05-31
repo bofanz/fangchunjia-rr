@@ -1,17 +1,11 @@
 import { motion, type Variants } from "motion/react";
-import type { Category, ProjectInfo } from "../types";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router";
 import { $activePos, $activeProject, $hoveredProject } from "~/stores/ui";
 import { useStore } from "@nanostores/react";
+import type { ProjectInfo } from "~/routes/_layout.projects._index";
 
-export default function ProjectList({
-  projects,
-  categories: _categories,
-}: {
-  projects: ProjectInfo[];
-  categories: Category[];
-}) {
+export default function ProjectList({ projects }: { projects: ProjectInfo[] }) {
   const committed = useRef<string | null>(null);
   const hoveredProject = useStore($hoveredProject);
 
@@ -66,8 +60,7 @@ export default function ProjectList({
             className="relative group w-fit"
             onMouseEnter={() => {
               $hoveredProject.set(p);
-              console.log(p.accentColor?.hex);
-              apply(p.accentColor?.hex);
+              apply(p.accentColor.hex || null);
             }}
           >
             <Link

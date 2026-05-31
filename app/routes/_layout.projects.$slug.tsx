@@ -1,16 +1,19 @@
 // app/routes/projects.$slug.tsx
 import { useLoaderData, data } from "react-router";
+import { useEffect } from "react";
 import type { Route } from "./+types/_layout.projects.$slug";
-import { client, urlFor } from "~/lib/sanity";
-import { motion } from "motion/react";
+import { client } from "~/lib/sanity";
 
 import type { SanityDocument } from "@sanity/client";
 import groq from "groq";
 import MediaGrid from "~/components/MediaGrid";
 import ProjectDescription from "~/components/ProjectDescription";
-import ReactLenis from "lenis/react";
+import ReactLenis, { useLenis } from "lenis/react";
 import Close from "~/components/Close";
 import { PortableText } from "@portabletext/react";
+import { $activeProject, $scrollY } from "~/stores/ui";
+import { motion } from "motion/react";
+import { useStore } from "@nanostores/react";
 
 interface Project extends SanityDocument {
   title: string;
@@ -19,7 +22,11 @@ interface Project extends SanityDocument {
   year: number;
   slug: { current: string };
   externalLink?: string;
-  cover: { mediaType: string; image?: { asset?: { _ref: string } } };
+  cover: {
+    mediaType: string;
+    image?: { asset?: { _ref: string } };
+    vimeoId?: number | string;
+  };
   category: { _id: string; title: string };
   grid: any[];
 }
@@ -36,7 +43,8 @@ export async function loader({ params }: Route.LoaderArgs) {
       externalLink,
       cover {
         mediaType,
-        image { asset { _ref } }
+        image { asset { _ref } },
+        vimeoId
       },
       accentColor,
       description,
@@ -76,30 +84,51 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function ProjectDetail() {
   const { project } = useLoaderData<typeof loader>();
-  const cover = project.cover;
-  console.log(project);
+  const activeProject = useStore($activeProject);
+
+  useEffect(() => {
+    if (!activeProject) {
+      console.log(activeProject);
+      $activeProject.set({
+        id: project._id,
+        title: project.title,
+        subtitle: project.subtitle ?? null,
+        slug: project.slug,
+        year: project.year,
+        categoryId: project.category?._id ?? "",
+        cover: project.cover as any,
+      });
+    }
+  }, []);
+
+  useLenis(({ scroll }) => {
+    $scrollY.set(scroll);
+  });
 
   const accentColor = project.accentColor?.hex;
 
   return (
     <div>
       <ReactLenis root options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}>
-        {/* Cover — in-flow, starts full height, shrinks to reveal images below */}
-        <motion.div
+        {/* Spacer — holds document flow and description overlay; Gallery cover shows through */}
+        <div
           className="w-full relative"
-          initial={{ height: "100dvh" }}
-          animate={{ height: "calc(100dvh - 32px)" }}
-          transition={{ duration: 1, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}
+          style={{ height: "calc(100dvh - 32px)" }}
         >
-          <div className="w-full h-full">
-            {cover?.mediaType === "image" && cover.image?.asset?._ref && (
-              <img
-                src={urlFor(cover.image.asset._ref).url()}
-                className="w-full h-full object-cover"
-              />
-            )}
-          </div>
-          <div className="grid grid-cols-3 absolute inset-0 p-4 gap-4">
+          <motion.div
+            className="grid grid-cols-3 absolute inset-0 p-4 gap-4"
+            initial={{
+              opacity: 0,
+              // filter: "blur(70px)",
+            }}
+            animate={{
+              opacity: 1,
+              // filter: "blue(0px)",
+              transition: {
+                delay: 1.2,
+              },
+            }}
+          >
             <div
               className="col-span-1 col-start-2 flex flex-col justify-end gap-4"
               style={{
@@ -115,8 +144,8 @@ export default function ProjectDetail() {
               </div>
               <div className="text-xs">(scroll down)</div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         {/* Images section — follows cover in natural flow */}
         <div className="bg-[#e7e7e7] p-8 px-32">
