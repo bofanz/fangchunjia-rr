@@ -14,11 +14,15 @@ export default function Layout({ pathname }: { pathname: string }) {
   const projectsData = useRouteLoaderData<typeof projectsLoader>(
     "routes/_layout.projects._index",
   );
-  const [cachedProjects, setCachedProjects] = useState(projectsData?.projects ?? null);
+  const [cachedProjects, setCachedProjects] = useState(
+    projectsData?.projects ?? null,
+  );
+
   useEffect(() => {
-    if (projectsData?.projects) setCachedProjects(projectsData.projects);
-  }, [projectsData]);
-  const galleryProjects = projectsData?.projects ?? cachedProjects;
+    if (projectsData?.projects) {
+      setCachedProjects(projectsData.projects);
+    }
+  }, [projectsData?.projects]);
 
   useEffect(() => {
     if (location.pathname === "/projects") {
@@ -42,10 +46,15 @@ export default function Layout({ pathname }: { pathname: string }) {
 
   return (
     <>
-      {galleryProjects && (
-        <div className="fixed top-0 bottom-0 left-0 right-0 -z-1 project-image">
-          <Gallery projects={galleryProjects} />
-        </div>
+      {cachedProjects && (
+        <>
+          <div className="fixed top-0 bottom-0 left-0 right-0 project-image">
+            <Gallery projects={cachedProjects} />
+          </div>
+          <div className="">
+            <ProjectTitle project={cachedProjects} />
+          </div>
+        </>
       )}
       <Header
         navItems={navItems}
@@ -54,7 +63,7 @@ export default function Layout({ pathname }: { pathname: string }) {
       />
       {isPurikuraVisible && <Purikura />}
       <Quote />
-      <ProjectTitle />
+
       <main className="w-full h-full">
         <Outlet />
       </main>

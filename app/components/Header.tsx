@@ -17,7 +17,7 @@ export default function Header({
   pathname: string;
 }) {
   return (
-    <div className="fixed z-300 hidden sm:flex">
+    <div className="fixed z-300 hidden sm:flex" style={{ viewTransitionName: "site-header" }}>
       <div
         onClick={() => {
           onClickBranding();

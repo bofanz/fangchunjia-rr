@@ -2,6 +2,7 @@ import { urlFor } from "~/lib/sanity";
 import { useStore } from "@nanostores/react";
 import { $activeProject, $hoveredProject } from "~/stores/ui";
 import type { ProjectInfo } from "~/types";
+import VimeoPlayer from "./VimeoPlayer";
 
 export default function Gallery({ projects }: { projects: ProjectInfo[] }) {
   const hoveredProject = useStore($hoveredProject);
@@ -10,7 +11,6 @@ export default function Gallery({ projects }: { projects: ProjectInfo[] }) {
   console.log(project);
   return (
     <div className="relative w-full h-full pointer-events-none">
-      <p className="fixed top-0 right-0 z-4000">{project?.slug.current}</p>
       {projects.map((p) => {
         const cover = p.cover as any;
         return (
@@ -25,6 +25,12 @@ export default function Gallery({ projects }: { projects: ProjectInfo[] }) {
               <img
                 src={urlFor(cover.image?.asset?._ref).url()}
                 className="w-full h-full object-cover"
+              />
+            )}
+            {cover?.mediaType === "video" && (
+              <VimeoPlayer
+                videoId={cover.vimeoId}
+                options={{ autoplay: true, background: true }}
               />
             )}
           </div>

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { urlFor } from "~/lib/sanity";
 
 function MediaWrapper({ media }: { media: any }) {
+  console.log(media);
   return (
     <div
       style={{
@@ -21,7 +22,7 @@ function MediaWrapper({ media }: { media: any }) {
 
 export default function MediaGrid({ grid }: { grid: any[] }) {
   return (
-    <div className="media-grid col-span-6">
+    <div className="grid grid-cols-12 gap-8">
       {grid &&
         grid.map((m) => <MediaWrapper media={m} key={m.image.asset._ref} />)}
       {/* {combineMedia(media, mediaLayout).map((m) => (

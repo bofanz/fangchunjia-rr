@@ -1,32 +1,28 @@
 import { useStore } from "@nanostores/react";
 import { motion } from "motion/react";
-import { useLocation, useMatches } from "react-router";
+import { useLocation, useRouteLoaderData } from "react-router";
 import { $activePos, $activeProject } from "~/stores/ui";
+import type { loader as slugLoader } from "~/routes/_layout.projects.$slug";
+import type { ProjectInfo } from "~/types";
 
 const DETAIL_LANDING = { top: 112, left: 32 };
-const PINK = "#ff008f";
 
-export default function ProjectTitle() {
+export default function ProjectTitle({ project }: { project: ProjectInfo }) {
   const location = useLocation();
-  const matches = useMatches();
   const activePos = useStore($activePos);
   const activeProject = useStore($activeProject);
+  // const slugData = useRouteLoaderData<typeof slugLoader>(
+  //   "routes/_layout.projects.$slug",
+  // );
 
   const isDetailPage =
     location.pathname.startsWith("/projects/") &&
     location.pathname !== "/projects";
 
-  const detailMatch = matches.find(
-    (m) => m.id === "routes/_layout.projects.$slug",
-  );
-  const routeTitle = (detailMatch?.data as any)?.project?.title as
-    | string
-    | undefined;
+  // const title = activeProject?.title ?? slugData?.project?.title;
 
-  const title = activeProject?.title ?? routeTitle;
-
-  if (!title) return null;
-  if (!isDetailPage && !activePos) return null;
+  // if (!title) return null;
+  // if (!isDetailPage && !activePos) return null;
 
   const targetPos = activePos
     ? { top: activePos!.top, left: activePos!.left }
@@ -39,13 +35,13 @@ export default function ProjectTitle() {
       initial={{
         top: hasListOrigin ? activePos!.top : DETAIL_LANDING.top,
         left: hasListOrigin ? activePos!.left : DETAIL_LANDING.left,
-        color: hasListOrigin ? PINK : "#000000",
+        // color: hasListOrigin ? PINK : "#000000",
         opacity: 1,
       }}
       animate={{
         top: targetPos.top,
         left: targetPos.left,
-        color: PINK,
+        // color: PINK,
         opacity: isDetailPage ? 1 : 0,
       }}
       transition={{
@@ -58,10 +54,15 @@ export default function ProjectTitle() {
           delay: isDetailPage ? 0 : 0.4,
         },
       }}
-      style={{ position: "fixed", zIndex: 50, pointerEvents: "none" }}
-      className="project-title font-medium mb-0 py-0"
+      style={{
+        position: "fixed",
+        zIndex: 50,
+        pointerEvents: "none",
+        viewTransitionName: "project-title",
+      }}
+      className="[text-shadow:0_0_2px_#DABBFF80] text-[#DABBFF] font-medium text-2xl mb-0 py-0 blur-[2px]"
     >
-      <h1>{title}</h1>
+      <h1>{project.title}</h1>
     </motion.div>
   );
 }

@@ -1,25 +1,25 @@
 // app/routes/projects.$slug.tsx
-import { useLoaderData, data, Link } from "react-router";
+import { useLoaderData, data } from "react-router";
 import type { Route } from "./+types/_layout.projects.$slug";
 import { client, urlFor } from "~/lib/sanity";
 import { motion } from "motion/react";
 
 import type { SanityDocument } from "@sanity/client";
-import type { SanityImageSource } from "@sanity/image-url";
 import groq from "groq";
-// import Gallery from "~/components/Gallery";
 import MediaGrid from "~/components/MediaGrid";
 import ProjectDescription from "~/components/ProjectDescription";
 import ReactLenis from "lenis/react";
-import XGraphic from "~/components/graphics/XGraphic";
 import Close from "~/components/Close";
+import { PortableText } from "@portabletext/react";
 
 interface Project extends SanityDocument {
   title: string;
+  subtitle?: string | null;
+  description: any;
   year: number;
   slug: { current: string };
   externalLink?: string;
-  cover: SanityImageSource;
+  cover: { mediaType: string; image?: { asset?: { _ref: string } } };
   category: { _id: string; title: string };
   grid: any[];
 }
@@ -34,7 +34,11 @@ export async function loader({ params }: Route.LoaderArgs) {
       year,
       slug,
       externalLink,
-      cover,
+      cover {
+        mediaType,
+        image { asset { _ref } }
+      },
+      accentColor,
       description,
       category-> { _id, title },
       grid[] {
@@ -43,22 +47,18 @@ export async function loader({ params }: Route.LoaderArgs) {
         colSpanMobile,
         colSpanTablet,
         colSpanDesktop,
-        // imageGridBlock fields
         _type == "imageGridBlock" => {
           image,
           caption,
         },
-        // videoGridBlock fields  
         _type == "videoGridBlock" => {
           url,
           caption
         },
-        // audioGridBlock fields
         _type == "audioGridBlock" => {
           url,
           caption
         },
-        // richTextGridBlock fields
         _type == "richTextGridBlock" => {
           content
         }
@@ -76,32 +76,54 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function ProjectDetail() {
   const { project } = useLoaderData<typeof loader>();
-  return (
-    <motion.div
-      initial={{ y: "100vh" }}
-      animate={{
-        y: 0,
-        transition: { duration: 0.7, ease: "linear", delay: 0.3 },
-      }}
-      className="min-h-screen bg-white"
-    >
-      <ReactLenis root options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}>
-        <>
-          <div className="fixed top-0 bottom-0 left-0 right-0 -z-1">
-            {/* <Gallery media={[project.cover]} activeMediaKey={project.cover.key} /> */}
-          </div>
+  const cover = project.cover;
+  console.log(project);
 
-          <div className="p-8 pt-28 w-full h-full">
-            <section className="grid grid-cols-12">
-              <div className="grid col-span-7 col-start-6 grid-cols-subgrid">
-                <MediaGrid grid={project.grid} />
-              </div>
-              <ProjectDescription project={project} />
-            </section>
+  const accentColor = project.accentColor?.hex;
+
+  return (
+    <div>
+      <ReactLenis root options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}>
+        {/* Cover — in-flow, starts full height, shrinks to reveal images below */}
+        <motion.div
+          className="w-full relative"
+          initial={{ height: "100dvh" }}
+          animate={{ height: "calc(100dvh - 32px)" }}
+          transition={{ duration: 1, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}
+        >
+          <div className="w-full h-full">
+            {cover?.mediaType === "image" && cover.image?.asset?._ref && (
+              <img
+                src={urlFor(cover.image.asset._ref).url()}
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
-        </>
+          <div className="grid grid-cols-3 absolute inset-0 p-4 gap-4">
+            <div
+              className="col-span-1 col-start-2 flex flex-col justify-end gap-4"
+              style={{
+                color: project.accentColor?.hex,
+                textShadow: `0 0 1px ${project.accentColor?.hex}80`,
+              }}
+            >
+              <div className="text-sm">
+                <div className="mb-4">{project.subtitle}</div>
+                <div className="leading-[16px]">
+                  <PortableText value={project.description} />
+                </div>
+              </div>
+              <div className="text-xs">(scroll down)</div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Images section — follows cover in natural flow */}
+        <div className="bg-[#e7e7e7] p-8 px-32">
+          <MediaGrid grid={project.grid} />
+        </div>
       </ReactLenis>
-      <Close />
-    </motion.div>
+      <Close color={accentColor} />
+    </div>
   );
 }

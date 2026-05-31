@@ -5,7 +5,7 @@ import { client } from "~/lib/sanity";
 import groq from "groq";
 import ProjectList from "~/components/ProjectList";
 import { $hoveredProject } from "~/stores/ui";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ReactLenis from "lenis/react";
 import type { ProjectInfo } from "~/types";
 import { motion } from "motion/react";
@@ -19,6 +19,8 @@ export async function loader({}: Route.LoaderArgs) {
       year,
       slug,
       cover,
+      accentColor,
+      lightDark,
       category-> { _id, title }
     }
   `);
@@ -41,13 +43,15 @@ export default function Projects() {
     $hoveredProject.set(null);
   }, []);
 
+  console.log(projects);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 0.3 } }}
+      animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.3 } }}
     >
       <ReactLenis root options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}>
-        <div className="p-8 pt-28">
+        <div className="p-4 pt-28">
           <section className="">
             <div className="">
               <ProjectList projects={projects} categories={categories} />

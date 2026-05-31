@@ -52,7 +52,7 @@ function NavItem({
       <NavLink
         to={item.to}
         onClick={onClick}
-        className={`block w-fit *:w-full  ${!isCurrent && "*:fill-fangchunjia-gray hover:*:fill-black active:*:fill-black"} *:transition`}
+        className={`block w-fit *:w-full *:transition *:fill-accent`}
       >
         {item.title === "Home" ? (
           <div className="w-full pl-3">
@@ -79,6 +79,9 @@ export default function Nav({ items }: NavProps) {
   const initialPosition = items.findIndex((e) =>
     location.pathname.startsWith(e.to),
   );
+  if (initialPosition === -1) {
+    return <></>;
+  }
   const [position, setPosition] = useState<number>(
     initialPosition >= 0 ? initialPosition : 0,
   );

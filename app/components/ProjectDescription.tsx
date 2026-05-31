@@ -2,9 +2,13 @@ import { useStore } from "@nanostores/react";
 import { PortableText } from "@portabletext/react";
 import { useEffect, useState } from "react";
 import { $activePos } from "~/stores/ui";
-import type { Project } from "~/types";
 
-export default function ProjectDescription({ project }: { project: Project }) {
+interface ProjectDescriptionProps {
+  subtitle?: string | null;
+  description: any;
+}
+
+export default function ProjectDescription({ project }: { project: ProjectDescriptionProps }) {
   const lineHeight = 22;
   const paragraphSpaceBefore = 0;
   const paragraphSpaceAfter = 0;

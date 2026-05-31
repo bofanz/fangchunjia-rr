@@ -36,8 +36,13 @@
   unicode-range: U+4E00- U+9FFF;
 }
 
+:root {
+  --accent: #000;
+}
+
 @theme {
   --font-abc-otto-kai: "ABC Otto", "FZShengSKSJW", serif;
+  --color-accent: var(--accent);
   --color-fangchunjia-pink: #ff008f;
   --color-fangchunjia-green: #5eff00;
   --color-fangchunjia-gray: #cdcdcd;
@@ -54,6 +59,7 @@
   --section-top-spacing: 112px;
   --cursor-default: url("/cursors/cursor-02.png"), default;
   --cursor-pointer: url("/cursors/cursor-01.png"), pointer;
+  --text-shadow-embossed: -1px -1px 0px #d8d8d866, 1px 1px 0px #949494ab;
 }
 
 @layer base {
@@ -79,8 +85,8 @@
 html,
 body {
   @apply w-full h-dvh;
-  /* @apply bg-white; */
   cursor: var(--cursor-default);
+  background-color: #e7e7e7;
 }
 
 a,
@@ -100,32 +106,82 @@ h2 {
 }
 
 @keyframes fade-out {
-  to { opacity: 0; }
+  to {
+    opacity: 0;
+  }
 }
 
-/* Extract <main> into its own layer so header/ProjectTitle (outside main) are unaffected */
-main {
-  view-transition-name: page-content;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
 }
 
-/* page content (the route area) fades out */
-::view-transition-old(page-content) {
+/* Root: symmetric crossfade — gallery persists in both snapshots */
+::view-transition-old(root) {
   animation: fade-out 0.3s ease-out both;
 }
 
-/* new page content hidden — Framer Motion handles the entry */
-::view-transition-new(page-content) {
-  animation: none;
-  opacity: 0;
-}
-
-/* Root layer (header, ProjectTitle, etc.): hide old snapshot so new shows through immediately
-   — no cross-fade, persistent elements appear stable throughout the transition */
-::view-transition-old(root) {
-  animation: none;
-  opacity: 0;
-}
-
 ::view-transition-new(root) {
+  animation: fade-in 0.3s ease-out both;
+}
+
+::view-transition-image-pair(root) {
+  mix-blend-mode: normal;
+}
+
+/* Persistent layout elements: own layers, no animation, old hidden to avoid double-rendering */
+::view-transition-group(site-header),
+::view-transition-old(site-header),
+::view-transition-new(site-header),
+::view-transition-group(site-quote),
+::view-transition-old(site-quote),
+::view-transition-new(site-quote),
+::view-transition-group(project-title),
+::view-transition-old(project-title),
+::view-transition-new(project-title) {
   animation: none;
+}
+
+::view-transition-old(site-header),
+::view-transition-old(site-quote),
+::view-transition-old(project-title) {
+  display: none;
+}
+
+.x {
+  background: #e8e9ed;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 1;
+  position: relative;
+  font-size: 12.5rem;
+  text-shadow: calc(-2px * 1) calc(-2px * 1) calc(4px * 1) #fffdfc;
+}
+
+.y {
+  background: #111;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 1;
+  position: relative;
+  text-shadow: -0.01em -0.01em 0.01em #000;
+}
+
+.embossed-wrapper {
+  mix-blend-mode: difference;
+  .embossed {
+    background: #444;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 1;
+    position: relative;
+    text-shadow: -0.02em -0.02em 0.02em #000;
+  }
 }
