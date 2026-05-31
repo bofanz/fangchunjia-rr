@@ -66,6 +66,7 @@ export default function Projects() {
 
   return (
     <>
+      {/* Eager load cover images */}
       {projects?.map((p) =>
         p.cover.mediaType === "image" && p.cover.image?.asset?._ref ? (
           <link
@@ -87,6 +88,8 @@ export default function Projects() {
           <div className="p-4 pt-28">
             <section className="">
               <div className="">
+                <ProjectList projects={projects} />
+                <ProjectList projects={projects} />
                 <ProjectList projects={projects} />
               </div>
             </section>

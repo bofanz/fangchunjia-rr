@@ -69,6 +69,9 @@ export function ProjectsLayout() {
       <motion.div
         ref={galleryWrapperRef}
         className="fixed top-0 left-0 right-0 overflow-hidden project-image"
+        initial={{
+          height: "100dvh",
+        }}
         animate={{
           height: isDetailPage ? "calc(100dvh - 32px)" : "100dvh",
         }}
@@ -100,7 +103,7 @@ export function ProjectsLayout() {
             viewTransitionName: "project-title",
             color: onScreenProject.accentColor.hex,
           }}
-          className="font-medium text-2xl mb-0 py-0"
+          className="font-medium text-lg mb-0 py-0"
         >
           <h1>{onScreenProject.title}</h1>
         </motion.div>
