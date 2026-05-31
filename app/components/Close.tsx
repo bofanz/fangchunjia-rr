@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import XGraphic from "./graphics/XGraphic";
 
-export default function Close({ color }: { color: string }) {
+export default function Close({ color }: { color?: string }) {
   return (
     <div className="fixed top-0 right-0 p-4">
       <Link

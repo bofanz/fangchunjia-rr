@@ -1,5 +1,4 @@
 import { urlFor } from "~/lib/sanity";
-import type { Media } from "../types";
 
 export default function MediaRenderer({ media }: { media: Media }) {
   return (

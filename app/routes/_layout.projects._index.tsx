@@ -1,10 +1,10 @@
 // app/routes/projects.tsx
 import { useLoaderData } from "react-router";
 import type { Route } from "./+types/_layout.projects._index";
-import { client } from "~/lib/sanity";
+import { client, urlFor } from "~/lib/sanity";
 import groq from "groq";
 import ProjectList from "~/components/ProjectList";
-import { $hoveredProject } from "~/stores/ui";
+import { $activeProject, $hoveredProject } from "~/stores/ui";
 import { useEffect } from "react";
 import ReactLenis from "lenis/react";
 import { motion } from "motion/react";
@@ -59,30 +59,40 @@ export async function loader({}: Route.LoaderArgs) {
 
 export default function Projects() {
   const { projects } = useLoaderData<typeof loader>();
-  const categories = [
-    { id: "experimental", name: "Exp" },
-    { id: "collaborations", name: "Collab" },
-  ];
   useEffect(() => {
+    $activeProject.set(null);
     $hoveredProject.set(null);
   }, []);
 
-  console.log(projects);
-
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.3 } }}
-    >
-      <ReactLenis root options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}>
-        <div className="p-4 pt-28">
-          <section className="">
-            <div className="">
-              <ProjectList projects={projects} />
-            </div>
-          </section>
-        </div>
-      </ReactLenis>
-    </motion.div>
+    <>
+      {projects?.map((p) =>
+        p.cover.mediaType === "image" && p.cover.image?.asset?._ref ? (
+          <link
+            key={p._id}
+            rel="prefetch"
+            as="image"
+            href={urlFor(p.cover.image.asset._ref).url()}
+          />
+        ) : null,
+      )}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.3 } }}
+      >
+        <ReactLenis
+          root
+          options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}
+        >
+          <div className="p-4 pt-28">
+            <section className="">
+              <div className="">
+                <ProjectList projects={projects} />
+              </div>
+            </section>
+          </div>
+        </ReactLenis>
+      </motion.div>
+    </>
   );
 }

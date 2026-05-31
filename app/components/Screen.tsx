@@ -2,7 +2,7 @@ import { urlFor } from "~/lib/sanity";
 import VimeoPlayer from "./VimeoPlayer";
 import type { ProjectInfo } from "~/routes/_layout.projects._index";
 
-export default function Gallery({
+export default function Screen({
   item,
 }: {
   item: Pick<ProjectInfo, "slug" | "cover"> | null;

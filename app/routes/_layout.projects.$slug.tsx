@@ -1,35 +1,16 @@
-// app/routes/projects.$slug.tsx
 import { useLoaderData, data } from "react-router";
 import { useEffect } from "react";
 import type { Route } from "./+types/_layout.projects.$slug";
 import { client } from "~/lib/sanity";
-
-import type { SanityDocument } from "@sanity/client";
 import groq from "groq";
 import MediaGrid from "~/components/MediaGrid";
-import ProjectDescription from "~/components/ProjectDescription";
 import ReactLenis, { useLenis } from "lenis/react";
 import Close from "~/components/Close";
 import { PortableText } from "@portabletext/react";
 import { $activeProject, $scrollY } from "~/stores/ui";
 import { motion } from "motion/react";
 import { useStore } from "@nanostores/react";
-
-interface Project extends SanityDocument {
-  title: string;
-  subtitle?: string | null;
-  description: any;
-  year: number;
-  slug: { current: string };
-  externalLink?: string;
-  cover: {
-    mediaType: string;
-    image?: { asset?: { _ref: string } };
-    vimeoId?: number | string;
-  };
-  category: { _id: string; title: string };
-  grid: any[];
-}
+import type { Project } from "~/types/sanity.types";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const project = await client.fetch<Project>(
@@ -88,15 +69,16 @@ export default function ProjectDetail() {
 
   useEffect(() => {
     if (!activeProject) {
-      console.log(activeProject);
       $activeProject.set({
-        id: project._id,
+        _id: project._id,
+        category: project.category,
         title: project.title,
-        subtitle: project.subtitle ?? null,
+        subtitle: project.subtitle,
         slug: project.slug,
         year: project.year,
-        categoryId: project.category?._id ?? "",
         cover: project.cover as any,
+        accentColor: project.accentColor,
+        lightDark: project.lightDark,
       });
     }
   }, []);
