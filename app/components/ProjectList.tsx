@@ -4,17 +4,14 @@ import { Link } from "react-router";
 import { $activePos, $activeProject, $hoveredProject } from "~/stores/ui";
 import { useStore } from "@nanostores/react";
 import type { ProjectInfo } from "~/routes/_layout.projects._index";
+import applyAccentColor from "~/utils/applyAccentColor";
 
 export default function ProjectList({ projects }: { projects: ProjectInfo[] }) {
   const committed = useRef<string | null>(null);
   const hoveredProject = useStore($hoveredProject);
 
-  const apply = (c: string | null) =>
-    c
-      ? document.documentElement.style.setProperty("--accent", c)
-      : document.documentElement.style.removeProperty("--accent");
-
   const projectListItemRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const DEFAULT_ACCENT_COLOR = "#000";
 
   const handleProjectClick = (p: ProjectInfo) => {
     $activeProject.set(p);
@@ -23,12 +20,12 @@ export default function ProjectList({ projects }: { projects: ProjectInfo[] }) {
       const rect = el.getBoundingClientRect();
       $activePos.set({ top: rect.top, left: rect.left });
     }
-    committed.current = p.accentColor?.hex || "#000";
-    apply(p.accentColor?.hex || "#000");
+    committed.current = p.accentColor?.hex || DEFAULT_ACCENT_COLOR;
+    applyAccentColor(p.accentColor?.hex || DEFAULT_ACCENT_COLOR);
   };
 
   useEffect(() => {
-    apply("#000000");
+    applyAccentColor(DEFAULT_ACCENT_COLOR);
   }, []);
 
   const container: Variants = {
@@ -49,10 +46,6 @@ export default function ProjectList({ projects }: { projects: ProjectInfo[] }) {
       initial="hidden"
       animate="show"
       className="project-list"
-      onMouseLeave={() => {
-        $hoveredProject.set(null);
-        apply(committed.current);
-      }}
     >
       {projects.map((p) => (
         <motion.li key={p.slug.current} variants={item}>
@@ -60,7 +53,11 @@ export default function ProjectList({ projects }: { projects: ProjectInfo[] }) {
             className="relative group w-fit"
             onMouseEnter={() => {
               $hoveredProject.set(p);
-              apply(p.accentColor.hex || null);
+              applyAccentColor(p.accentColor.hex || null);
+            }}
+            onMouseLeave={() => {
+              $hoveredProject.set(null);
+              applyAccentColor(committed.current);
             }}
           >
             <Link

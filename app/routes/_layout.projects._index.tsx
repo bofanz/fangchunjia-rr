@@ -87,10 +87,10 @@ export default function Projects() {
         >
           <div className="p-4 pt-28">
             <section className="">
-              <div className="">
+              <div className="-rotate-1 pl-4">
                 <ProjectList projects={projects} />
-                <ProjectList projects={projects} />
-                <ProjectList projects={projects} />
+                {/* <ProjectList projects={projects} />
+                <ProjectList projects={projects} /> */}
               </div>
             </section>
           </div>

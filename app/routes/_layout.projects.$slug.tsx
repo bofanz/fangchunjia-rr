@@ -11,6 +11,7 @@ import { $activeProject, $scrollY } from "~/stores/ui";
 import { motion } from "motion/react";
 import { useStore } from "@nanostores/react";
 import type { Project } from "~/types/sanity.types";
+import applyAccentColor from "~/utils/applyAccentColor";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const project = await client.fetch<Project>(
@@ -81,6 +82,7 @@ export default function ProjectDetail() {
         lightDark: project.lightDark,
       });
     }
+    applyAccentColor(project.accentColor.hex as string);
   }, []);
 
   useLenis(({ scroll }) => {
@@ -101,13 +103,12 @@ export default function ProjectDetail() {
             className="grid grid-cols-3 absolute inset-0 p-4 gap-4"
             initial={{
               opacity: 0,
-              // filter: "blur(70px)",
             }}
             animate={{
               opacity: 1,
-              // filter: "blue(0px)",
               transition: {
                 delay: 1.2,
+                duration: 0.5,
               },
             }}
           >
@@ -118,13 +119,13 @@ export default function ProjectDetail() {
                 textShadow: `0 0 1px ${project.accentColor?.hex}80`,
               }}
             >
-              <div className="text-sm">
+              <div className="text-sm font-medium">
                 <div className="mb-4">{project.subtitle}</div>
                 <div className="leading-[16px]">
                   <PortableText value={project.description} />
                 </div>
               </div>
-              <div className="text-xs">(scroll down)</div>
+              <div className="text-xs font-medium">(scroll down)</div>
             </div>
           </motion.div>
         </div>

@@ -36,6 +36,13 @@
   unicode-range: U+4E00- U+9FFF;
 }
 
+@font-face {
+  font-family: "FZShengSKSJW";
+  src: url("/fonts/FZShengSKSJW_Zhong.TTF") format("truetype");
+  font-weight: 500;
+  unicode-range: U+4E00- U+9FFF;
+}
+
 :root {
   --accent: #000;
 }

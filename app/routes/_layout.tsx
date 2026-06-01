@@ -7,7 +7,6 @@ import {
 } from "react-router";
 import { useStore } from "@nanostores/react";
 import { motion, useMotionValue } from "motion/react";
-import Gallery from "~/components/Gallery";
 import { urlFor } from "~/lib/sanity";
 import Header from "~/components/Header";
 import ProjectTitle from "~/components/ProjectTitle";
@@ -91,7 +90,10 @@ export function ProjectsLayout() {
       {onScreenProject && (
         <motion.div
           initial={{ filter: "blur(2px)" }}
-          animate={{ filter: isDetailPage ? "blur(0px)" : "blur(2px)" }}
+          animate={{
+            filter: isDetailPage ? "blur(0px)" : "blur(2px)",
+            transition: { duration: 1 },
+          }}
           style={{
             position: "fixed",
             top: 0,
