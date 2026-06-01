@@ -134,7 +134,10 @@ export default function Layout({ pathname }: { pathname: string }) {
       {isPurikuraVisible && <Purikura />}
       <Quote />
 
-      <main className="w-full h-full">
+      <main
+        className="w-full h-full"
+        style={{ viewTransitionName: "outlet" } as React.CSSProperties}
+      >
         <Outlet />
       </main>
     </>

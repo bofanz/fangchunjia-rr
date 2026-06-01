@@ -7,7 +7,6 @@ import ProjectList from "~/components/ProjectList";
 import { $activeProject, $hoveredProject } from "~/stores/ui";
 import { useEffect } from "react";
 import ReactLenis from "lenis/react";
-import { motion } from "motion/react";
 import type { Project } from "~/types/sanity.types";
 
 export type ProjectInfo = Pick<
@@ -77,25 +76,18 @@ export default function Projects() {
           />
         ) : null,
       )}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.3 } }}
+      <ReactLenis
+        root
+        options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}
       >
-        <ReactLenis
-          root
-          options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}
-        >
-          <div className="p-4 pt-28">
-            <section className="">
-              <div className="-rotate-1 pl-4">
-                <ProjectList projects={projects} />
-                {/* <ProjectList projects={projects} />
-                <ProjectList projects={projects} /> */}
-              </div>
-            </section>
-          </div>
-        </ReactLenis>
-      </motion.div>
+        <div className="p-4 pt-28">
+          <section className="">
+            <div className="-rotate-1 pl-4">
+              <ProjectList projects={projects} />
+            </div>
+          </section>
+        </div>
+      </ReactLenis>
     </>
   );
 }

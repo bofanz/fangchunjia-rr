@@ -124,17 +124,23 @@ h2 {
   }
 }
 
-/* Root: symmetric crossfade — gallery persists in both snapshots */
+/* Root contains only the Screen background — keep it static, no crossfade */
 ::view-transition-old(root) {
-  animation: fade-out 0.3s ease-out both;
+  animation: none;
+  display: none;
 }
 
 ::view-transition-new(root) {
-  animation: fade-in 0.3s ease-out both;
+  animation: none;
 }
 
-::view-transition-image-pair(root) {
-  mix-blend-mode: normal;
+/* Route content fades between pages */
+::view-transition-old(outlet) {
+  animation: fade-out 0.3s ease-out both;
+}
+
+::view-transition-new(outlet) {
+  animation: fade-in 0.3s ease-out both;
 }
 
 /* Persistent layout elements: own layers, no animation, old hidden to avoid double-rendering */

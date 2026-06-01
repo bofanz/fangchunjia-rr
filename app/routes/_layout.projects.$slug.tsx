@@ -119,19 +119,25 @@ export default function ProjectDetail() {
                 textShadow: `0 0 1px ${project.accentColor?.hex}80`,
               }}
             >
-              <div className="text-sm font-medium">
-                <div className="mb-4">{project.subtitle}</div>
-                <div className="leading-[16px]">
-                  <PortableText value={project.description} />
+              <motion.div
+                drag
+                dragMomentum={false}
+                className="flex flex-col gap-4"
+              >
+                <div className="text-sm font-medium">
+                  <div className="mb-4">{project.subtitle}</div>
+                  <div className="leading-[16px]">
+                    <PortableText value={project.description} />
+                  </div>
                 </div>
-              </div>
-              <div className="text-xs font-medium">(scroll down)</div>
+                <div className="text-xs font-medium">(scroll down)</div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
 
         {/* Images section — follows cover in natural flow */}
-        <div className="bg-[#e7e7e7] p-8 px-32">
+        <div className="p-8 px-32">
           <MediaGrid grid={project.grid} />
         </div>
       </ReactLenis>

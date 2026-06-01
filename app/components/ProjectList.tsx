@@ -43,9 +43,9 @@ export default function ProjectList({ projects }: { projects: ProjectInfo[] }) {
   return (
     <motion.ul
       variants={container}
-      initial="hidden"
+      initial="show"
       animate="show"
-      className="project-list"
+      className="project-list relative z-1"
     >
       {projects.map((p) => (
         <motion.li key={p.slug.current} variants={item}>
