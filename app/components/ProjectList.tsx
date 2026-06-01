@@ -29,9 +29,9 @@ export default function ProjectList({ projects }: { projects: ProjectInfo[] }) {
   }, []);
 
   const container: Variants = {
-    hidden: {},
+    hidden: { opacity: 0 },
     show: {
-      transition: { staggerChildren: 0.02 },
+      opacity: 1,
     },
   };
 
@@ -43,9 +43,10 @@ export default function ProjectList({ projects }: { projects: ProjectInfo[] }) {
   return (
     <motion.ul
       variants={container}
-      initial="show"
+      initial="hidden"
       animate="show"
-      className="project-list relative z-1"
+      transition={{ duration: 0.4, delay: 0.4 }}
+      className="project-list relative"
     >
       {projects.map((p) => (
         <motion.li key={p.slug.current} variants={item}>
