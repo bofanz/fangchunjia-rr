@@ -59,7 +59,10 @@ export default function ProjectTitle({ project }: { project: ProjectInfo }) {
       }}
       className="font-medium text-2xl mb-0 py-0 blur-[2px]"
     >
-      <h1>{project.title}</h1>
+      <motion.div>
+        <h1>{project.title}</h1>
+      </motion.div>
+      <motion.div>(close)</motion.div>
     </motion.div>
   );
 }

@@ -14,6 +14,7 @@ import Purikura from "~/components/Purikura";
 import Quote from "~/components/Quote";
 import { $activeProject, $hoveredProject, $scrollY } from "~/stores/ui";
 import Screen from "~/components/Screen";
+import Back from "~/components/Back";
 
 export function ProjectsLayout() {
   const matches = useMatches();
@@ -72,6 +73,7 @@ export function ProjectsLayout() {
         initial={{
           height: "100dvh",
         }}
+        // Comment out Screen following the scroll
         // animate={{
         //   height: isDetailPage ? "calc(100dvh - 32px)" : "100dvh",
         // }}
@@ -96,19 +98,21 @@ export function ProjectsLayout() {
             transition: { duration: 1 },
           }}
           style={{
-            position: "fixed",
             top: 0,
             left: 0,
             x: cursorX,
             y: cursorY,
-            zIndex: 5000,
-            pointerEvents: "none",
             viewTransitionName: "project-title",
             color: onScreenProject.accentColor.hex,
           }}
-          className="font-medium text-lg mb-0 py-0"
+          className="font-medium text-lg mb-0 py-0 fixed z-1000"
         >
-          <h1>{onScreenProject.title}</h1>
+          <motion.div className="pointer-events-none top-full left-full">
+            <h1>{onScreenProject.title}</h1>
+          </motion.div>
+          <motion.div className="absolute top-full left-full">
+            <Back />
+          </motion.div>
         </motion.div>
       )}
     </>

@@ -5,7 +5,7 @@ import { client } from "~/lib/sanity";
 import groq from "groq";
 import MediaGrid from "~/components/MediaGrid";
 import ReactLenis, { useLenis } from "lenis/react";
-import Close from "~/components/Close";
+import Close from "~/components/Back";
 import { PortableText } from "@portabletext/react";
 import { $activeProject, $scrollY } from "~/stores/ui";
 import { motion } from "motion/react";
