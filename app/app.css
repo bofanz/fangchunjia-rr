@@ -135,12 +135,28 @@ h2 {
 }
 
 /* Route content fades between pages */
+::view-transition-group(outlet) {
+  animation: none;
+  overflow: clip;
+}
+
 ::view-transition-old(outlet) {
   animation: fade-out 0.3s ease-out both;
 }
 
 ::view-transition-new(outlet) {
   animation: fade-in 0.3s ease-out both;
+}
+
+/* Screen background — persistent, no animation, old hidden to avoid double-rendering */
+::view-transition-group(gallery-screen),
+::view-transition-old(gallery-screen),
+::view-transition-new(gallery-screen) {
+  animation: none;
+}
+
+::view-transition-old(gallery-screen) {
+  display: none;
 }
 
 /* Persistent layout elements: own layers, no animation, old hidden to avoid double-rendering */

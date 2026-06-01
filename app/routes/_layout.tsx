@@ -25,19 +25,19 @@ export function ProjectsLayout() {
   const activeProject = useStore($activeProject);
 
   // Scrolling of Gallery on /projects/$slug and restoring on /projects
-  useEffect(() => {
-    if (!isDetailPage) {
-      if (galleryWrapperRef.current)
-        galleryWrapperRef.current.style.transform = "";
-      $scrollY.set(0);
-      return;
-    }
-    return $scrollY.listen((y) => {
-      if (!galleryWrapperRef.current) return;
-      const maxTranslate = window.innerHeight - 32;
-      galleryWrapperRef.current.style.transform = `translateY(-${Math.min(y, maxTranslate)}px)`;
-    });
-  }, [isDetailPage]);
+  // useEffect(() => {
+  //   if (!isDetailPage) {
+  //     if (galleryWrapperRef.current)
+  //       galleryWrapperRef.current.style.transform = "";
+  //     $scrollY.set(0);
+  //     return;
+  //   }
+  //   return $scrollY.listen((y) => {
+  //     if (!galleryWrapperRef.current) return;
+  //     const maxTranslate = window.innerHeight - 32;
+  //     galleryWrapperRef.current.style.transform = `translateY(-${Math.min(y, maxTranslate)}px)`;
+  //   });
+  // }, [isDetailPage]);
 
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
@@ -68,17 +68,18 @@ export function ProjectsLayout() {
       <motion.div
         ref={galleryWrapperRef}
         className="fixed top-0 left-0 right-0 overflow-hidden project-image"
+        style={{ viewTransitionName: "gallery-screen" } as React.CSSProperties}
         initial={{
           height: "100dvh",
         }}
-        animate={{
-          height: isDetailPage ? "calc(100dvh - 32px)" : "100dvh",
-        }}
-        transition={
-          isDetailPage
-            ? { duration: 1, delay: 0.5, ease: [0.76, 0, 0.24, 1] }
-            : { duration: 0 }
-        }
+        // animate={{
+        //   height: isDetailPage ? "calc(100dvh - 32px)" : "100dvh",
+        // }}
+        // transition={
+        //   isDetailPage
+        //     ? { duration: 1, delay: 0.5, ease: [0.76, 0, 0.24, 1] }
+        //     : { duration: 0 }
+        // }
       >
         <Screen item={displayItem} />
       </motion.div>

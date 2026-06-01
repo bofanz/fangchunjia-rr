@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useMotionValue, type Transition } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  type Transition,
+} from "motion/react";
 import AboutGraphic from "./graphics/AboutGraphic";
 import HomeGraphic from "./graphics/HomeGraphic";
 import ProjectsGraphic from "./graphics/ProjectsGraphic";
@@ -42,11 +47,14 @@ function NavItem({
   isCurrent,
 }: CarouselItemProps) {
   return (
-    <div
+    <motion.div
       key={`${item?.id ?? index}-${index}`}
       className={`relative shrink-0 flex flex-col items-start overflow-hidden h-full`}
       style={{
         width: `128px`,
+      }}
+      animate={{
+        filter: isCurrent ? "blur(0px)" : "blur(1px)",
       }}
     >
       <NavLink
@@ -70,18 +78,13 @@ function NavItem({
           <></>
         )}
       </NavLink>
-    </div>
+    </motion.div>
   );
 }
 
 export default function Nav({ items }: NavProps) {
   const location = useLocation();
-  const initialPosition = items.findIndex((e) =>
-    location.pathname.startsWith(e.to),
-  );
-  if (initialPosition === -1) {
-    return <></>;
-  }
+  const initialPosition = items.findIndex((e) => location.pathname === e.to);
   const [position, setPosition] = useState<number>(
     initialPosition >= 0 ? initialPosition : 0,
   );
@@ -146,42 +149,49 @@ export default function Nav({ items }: NavProps) {
 
   return (
     <>
-      <div className="">
-        <motion.div ref={containerRef} className={`w-96 overflow-hidden flex`}>
-          <motion.div
-            className="flex"
-            style={{
-              x,
-            }}
-            animate={{ x: -(128 * position) }}
-            transition={effectiveTransition}
-            onAnimationStart={handleAnimationStart}
-            onAnimationComplete={handleAnimationComplete}
-          >
-            {itemsForRender.map((item, index) => {
-              // Determine which items are currently visible (clickable)
-              const isInView =
-                index >= position && index < position + itemCount;
-              const relativeIndex = index - position; // Position within visible items (0, 1, 2, etc.)
+      <AnimatePresence>
+        {initialPosition !== -1 && (
+          <motion.div className="" key="naav" exit={{ opacity: 0 }}>
+            <motion.div
+              ref={containerRef}
+              className={`w-96 overflow-hidden flex`}
+            >
+              <motion.div
+                className="flex"
+                style={{
+                  x,
+                }}
+                animate={{ x: -(128 * position) }}
+                transition={effectiveTransition}
+                onAnimationStart={handleAnimationStart}
+                onAnimationComplete={handleAnimationComplete}
+              >
+                {itemsForRender.map((item, index) => {
+                  // Determine which items are currently visible (clickable)
+                  const isInView =
+                    index >= position && index < position + itemCount;
+                  const relativeIndex = index - position; // Position within visible items (0, 1, 2, etc.)
 
-              return (
-                <NavItem
-                  key={`${item?.id ?? index}-${index}`}
-                  item={item}
-                  index={index}
-                  x={x}
-                  transition={effectiveTransition}
-                  onClick={() => isInView && handleItemClick(relativeIndex)}
-                  // Makes it apply to the current active item as well as its copies
-                  // So that flickering is avoided during jump
-                  isCurrent={relativeIndex % items.length === 0}
-                  itemCount={itemCount}
-                />
-              );
-            })}
+                  return (
+                    <NavItem
+                      key={`${item?.id ?? index}-${index}`}
+                      item={item}
+                      index={index}
+                      x={x}
+                      transition={effectiveTransition}
+                      onClick={() => isInView && handleItemClick(relativeIndex)}
+                      // Makes it apply to the current active item as well as its copies
+                      // So that flickering is avoided during jump
+                      isCurrent={relativeIndex % items.length === 0}
+                      itemCount={itemCount}
+                    />
+                  );
+                })}
+              </motion.div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

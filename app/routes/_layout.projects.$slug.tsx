@@ -85,9 +85,15 @@ export default function ProjectDetail() {
     applyAccentColor(project.accentColor.hex as string);
   }, []);
 
-  useLenis(({ scroll }) => {
+  const lenis = useLenis(({ scroll }) => {
     $scrollY.set(scroll);
   });
+
+  useEffect(() => {
+    return () => {
+      lenis?.scrollTo(0, { immediate: true });
+    };
+  }, [lenis]);
 
   const accentColor = project.accentColor?.hex;
 
@@ -95,9 +101,11 @@ export default function ProjectDetail() {
     <div>
       <ReactLenis root options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}>
         {/* Spacer — holds document flow and description overlay; Gallery cover shows through */}
-        <div
+        <motion.div
           className="w-full relative"
-          style={{ height: "calc(100dvh - 32px)" }}
+          initial={{ height: "100dvh" }}
+          animate={{ height: "calc(100dvh - 32px)" }}
+          transition={{ duration: 0.8, delay: 0.5, ease: [0.72, 0, 0.24, 1] }}
         >
           <motion.div
             className="grid grid-cols-3 absolute inset-0 p-4 gap-4"
@@ -107,8 +115,8 @@ export default function ProjectDetail() {
             animate={{
               opacity: 1,
               transition: {
-                delay: 1.2,
-                duration: 0.5,
+                delay: 1,
+                duration: 0.4,
               },
             }}
           >
@@ -134,10 +142,10 @@ export default function ProjectDetail() {
               </motion.div>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* Images section — follows cover in natural flow */}
-        <div className="p-8 px-32">
+        <div className="p-8 px-32" style={{ backgroundColor: "#e7e7e7" }}>
           <MediaGrid grid={project.grid} />
         </div>
       </ReactLenis>
