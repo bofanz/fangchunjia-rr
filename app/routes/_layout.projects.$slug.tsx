@@ -5,13 +5,13 @@ import { client } from "~/lib/sanity";
 import groq from "groq";
 import MediaGrid from "~/components/MediaGrid";
 import ReactLenis, { useLenis } from "lenis/react";
-import Close from "~/components/Back";
 import { PortableText } from "@portabletext/react";
 import { $activeProject, $scrollY } from "~/stores/ui";
 import { motion } from "motion/react";
 import { useStore } from "@nanostores/react";
 import type { Project } from "~/types/sanity.types";
 import applyAccentColor from "~/utils/applyAccentColor";
+import Back from "~/components/Back";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const project = await client.fetch<Project>(
@@ -140,6 +140,9 @@ export default function ProjectDetail() {
                 </div>
                 <div className="text-xs font-medium">(scroll down)</div>
               </motion.div>
+              <div className="fixed top-0 inset-x-auto">
+                <Back />
+              </div>
             </div>
           </motion.div>
         </motion.div>
@@ -149,7 +152,6 @@ export default function ProjectDetail() {
           <MediaGrid grid={project.grid} />
         </div>
       </ReactLenis>
-      <Close color={accentColor} />
     </div>
   );
 }

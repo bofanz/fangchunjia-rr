@@ -30,7 +30,20 @@ export async function loader({}: Route.LoaderArgs) {
       subtitle,
       year,
       slug,
-      cover,
+      cover {
+        mediaType,
+        video {
+          asset->{
+            playbackId,
+            assetId,
+            status,
+            // optional, useful for posters/layout:
+            "aspectRatio": data.aspect_ratio,
+            "duration": data.duration
+          }
+        },
+        image,
+      },
       accentColor,
       lightDark,
       category-> { _id, title }
@@ -62,6 +75,7 @@ export default function Projects() {
     $activeProject.set(null);
     $hoveredProject.set(null);
   }, []);
+  console.log(projects);
 
   return (
     <>
@@ -76,13 +90,10 @@ export default function Projects() {
           />
         ) : null,
       )}
-      <ReactLenis
-        root
-        options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}
-      >
+      <ReactLenis root options={{ lerp: 0.1, duration: 1.5, syncTouch: true }}>
         <div className="p-4 pt-28">
           <section className="">
-            <div className="-rotate-1 pl-4">
+            <div className="pl-4">
               <ProjectList projects={projects} />
             </div>
           </section>

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { urlFor } from "~/lib/sanity";
-import VimeoPlayer from "./VimeoPlayer";
+import MuxPlayer from "@mux/mux-player-react";
 import type { ProjectInfo } from "~/routes/_layout.projects._index";
 
 export default function Screen({
@@ -23,7 +23,7 @@ export default function Screen({
           />
         )}
         {item?.cover.mediaType === "video" &&
-          item.cover.vimeoId !== undefined && (
+          item.cover.video?.asset?.playbackId !== undefined && (
             <motion.div
               key={item.slug.current}
               className="absolute inset-0 w-full h-full"
@@ -32,9 +32,24 @@ export default function Screen({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <VimeoPlayer
-                videoId={item.cover.vimeoId}
-                options={{ autoplay: true, background: true, preload: "auto" }}
+              <MuxPlayer
+                playbackId={item.cover.video?.asset?.playbackId}
+                loop
+                muted
+                streamType="on-demand"
+                preload="metadata"
+                autoPlay
+                thumbnailTime={0}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  ["--media-object-fit" as string]: "cover",
+                  ["--media-object-position" as string]: "center",
+                }}
+                metadata={{
+                  video_id: "video-id-54321",
+                  video_title: "Test video title",
+                }}
               />
             </motion.div>
           )}

@@ -6,7 +6,7 @@ import {
   useRouteLoaderData,
 } from "react-router";
 import { useStore } from "@nanostores/react";
-import { motion, useMotionValue } from "motion/react";
+import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import { urlFor } from "~/lib/sanity";
 import Header from "~/components/Header";
 import ProjectTitle from "~/components/ProjectTitle";
@@ -109,9 +109,6 @@ export function ProjectsLayout() {
         >
           <motion.div className="pointer-events-none top-full left-full">
             <h1>{onScreenProject.title}</h1>
-          </motion.div>
-          <motion.div className="absolute top-full left-full">
-            <Back />
           </motion.div>
         </motion.div>
       )}

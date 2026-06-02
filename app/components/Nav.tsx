@@ -55,6 +55,7 @@ function NavItem({
       }}
       animate={{
         filter: isCurrent ? "blur(0px)" : "blur(1px)",
+        opacity: isCurrent ? "1" : "0.8",
       }}
     >
       <NavLink
@@ -151,7 +152,12 @@ export default function Nav({ items }: NavProps) {
     <>
       <AnimatePresence>
         {initialPosition !== -1 && (
-          <motion.div className="" key="naav" exit={{ opacity: 0 }}>
+          <motion.div
+            className=""
+            key="nav"
+            exit={{ opacity: 0 }}
+            // initial={{ opacity: 1, transition: { duration: 4 } }}
+          >
             <motion.div
               ref={containerRef}
               className={`w-96 overflow-hidden flex`}

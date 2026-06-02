@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-export default function Close({ color }: { color?: string }) {
+export default function Back({ color }: { color?: string }) {
   return (
     <Link
       // TODO
