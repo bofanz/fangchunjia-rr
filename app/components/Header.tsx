@@ -18,9 +18,6 @@ export default function Header({
   onClickBranding: Function;
   pathname: string;
 }) {
-  const location = useLocation();
-  const initialPosition = navItems.findIndex((e) => location.pathname === e.to);
-
   return (
     <div
       className="fixed z-300 flex"
@@ -33,19 +30,6 @@ export default function Header({
       >
         <Branding />
       </div>
-      {/* <AnimatePresence>
-        {initialPosition !== -1 && (
-          <motion.div
-            className=""
-            key="nav"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: 1 } }}
-            exit={{ opacity: 0 }}
-          >
-            
-          </motion.div>
-        )}
-      </AnimatePresence> */}
       <Nav items={navItems} pathname={pathname} />
     </div>
   );

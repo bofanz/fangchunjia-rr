@@ -30,7 +30,7 @@ export async function loader({ params }: Route.LoaderArgs) {
       },
       accentColor,
       description,
-      category-> { _id, title },
+      labels[]-> { _id, title, slug },
       grid[] {
         _type,
         _key,
@@ -72,7 +72,7 @@ export default function ProjectDetail() {
     if (!activeProject) {
       $activeProject.set({
         _id: project._id,
-        category: project.category,
+        labels: project.labels,
         title: project.title,
         subtitle: project.subtitle,
         slug: project.slug,

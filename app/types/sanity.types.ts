@@ -82,11 +82,27 @@ export type ImageGridBlock = {
   alt?: string;
 };
 
-export type CategoryReference = {
+export type Label = {
+  _id: string;
+  _type: "label";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: Slug;
+};
+
+export type Slug = {
+  _type: "slug";
+  current: string;
+  source?: string;
+};
+
+export type LabelReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "category";
+  [internalGroqTypeReferenceTo]?: "label";
 };
 
 export type Project = {
@@ -99,7 +115,11 @@ export type Project = {
   subtitle?: string;
   year: number;
   slug: Slug;
-  category: CategoryReference;
+  labels?: Array<
+    {
+      _key: string;
+    } & LabelReference
+  >;
   externalLink?: string;
   cover: {
     mediaType: "image" | "video";
@@ -154,8 +174,6 @@ export type MuxVideoAssetReference = {
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "mux.videoAsset";
-  // TODO
-  playbackId: string;
 };
 
 export type MuxVideo = {
@@ -186,23 +204,6 @@ export type Color = {
   hsl?: HslaColor;
   hsv?: HsvaColor;
   rgb?: RgbaColor;
-};
-
-export type Category = {
-  _id: string;
-  _type: "category";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  slug: Slug;
-  order?: number;
-};
-
-export type Slug = {
-  _type: "slug";
-  current: string;
-  source?: string;
 };
 
 export type Cover = {
@@ -493,15 +494,15 @@ export type AllSanitySchemaTypes =
   | VideoGridBlock
   | SanityImageAssetReference
   | ImageGridBlock
-  | CategoryReference
+  | Label
+  | Slug
+  | LabelReference
   | Project
   | MuxVideoAssetReference
   | MuxVideo
   | SanityImageCrop
   | SanityImageHotspot
   | Color
-  | Category
-  | Slug
   | Cover
   | Profile
   | Settings

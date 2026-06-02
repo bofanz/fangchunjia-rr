@@ -12,7 +12,7 @@ import type { Project } from "~/types/sanity.types";
 export type ProjectInfo = Pick<
   Project,
   | "_id"
-  | "category"
+  | "labels"
   | "title"
   | "subtitle"
   | "slug"
@@ -46,25 +46,11 @@ export async function loader({}: Route.LoaderArgs) {
       },
       accentColor,
       lightDark,
-      category-> { _id, title }
+      labels[]-> { _id, title, slug }
     }
   `);
-  const projects: Pick<
-    Project,
-    | "_id"
-    | "category"
-    | "title"
-    | "subtitle"
-    | "slug"
-    | "year"
-    | "cover"
-    | "accentColor"
-    | "lightDark"
-  >[] = raw.map((p) => ({
+  const projects: ProjectInfo[] = raw.map((p) => ({
     ...p,
-    id: p._id,
-    categoryId: p.category?._id ?? "",
-    subtitle: p.subtitle ?? null,
   }));
   return { projects };
 }
