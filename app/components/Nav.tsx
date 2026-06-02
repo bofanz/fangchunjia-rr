@@ -35,6 +35,7 @@ interface CarouselItemProps {
   onClick: () => void;
   isCurrent: boolean;
   itemCount: number;
+  relativeIndex: number;
 }
 
 // const baseW = 32;
@@ -45,7 +46,20 @@ function NavItem({
   transition,
   onClick,
   isCurrent,
+  relativeIndex,
+  itemCount,
 }: CarouselItemProps) {
+  // If relativeIndex % itemCount is 1, it means the item is at the second position, and should have blur(1px).
+  // Similarly, if relativeIndex % itemCount is 2, it means the item is at the third position, and should have blur(2px), and so on.
+  // For items left to the visible positions, the blur is set to 0 to save cost.
+  let blurRadius = 0;
+  if (relativeIndex < 0) {
+    blurRadius = 0;
+  } else if (relativeIndex === itemCount) {
+    blurRadius = itemCount;
+  } else {
+    blurRadius = relativeIndex % itemCount;
+  }
   return (
     <motion.div
       key={`${item?.id ?? index}-${index}`}
@@ -54,14 +68,15 @@ function NavItem({
         width: `128px`,
       }}
       animate={{
-        filter: isCurrent ? "blur(0px)" : "blur(1px)",
-        opacity: isCurrent ? "1" : "0.8",
+        filter: `blur(${blurRadius}px)`,
+        opacity: isCurrent ? 1 : 0.8,
       }}
+      transition={transition}
     >
       <NavLink
         to={item.to}
         onClick={onClick}
-        className={`block w-fit *:w-full *:transition *:fill-accent`}
+        className={`block w-fit *:w-full *:transition *:fill-accent *:overflow-visible h-10`}
       >
         {item.title === "Home" ? (
           <div className="w-full pl-3">
@@ -190,6 +205,7 @@ export default function Nav({ items }: NavProps) {
                       // Makes it apply to the current active item as well as its copies
                       // So that flickering is avoided during jump
                       isCurrent={relativeIndex % items.length === 0}
+                      relativeIndex={relativeIndex}
                       itemCount={itemCount}
                     />
                   );
