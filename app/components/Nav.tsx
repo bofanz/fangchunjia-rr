@@ -155,8 +155,9 @@ export default function Nav({ items }: NavProps) {
           <motion.div
             className=""
             key="nav"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.4, duration: 0.4 } }}
             exit={{ opacity: 0 }}
-            // initial={{ opacity: 1, transition: { duration: 4 } }}
           >
             <motion.div
               ref={containerRef}

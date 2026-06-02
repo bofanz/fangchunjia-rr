@@ -105,7 +105,7 @@ export default function ProjectDetail() {
           className="w-full relative"
           initial={{ height: "100dvh" }}
           animate={{ height: "calc(100dvh - 32px)" }}
-          transition={{ duration: 0.8, delay: 0.5, ease: [0.72, 0, 0.24, 1] }}
+          transition={{ duration: 0.8, delay: 0.4, ease: [0.72, 0, 0.24, 1] }}
         >
           <motion.div
             className="grid grid-cols-3 absolute inset-0 p-4 gap-4"
